@@ -51,6 +51,19 @@ app.post('/tarea', function (req, res) {
     res.status(201).json(retVal);
 });
 
+app.post('/alert', function (req, res) {
+    
+    let dia = "5/29/2020";
+    let tarea = "terapia pc paulina ajajaj";
+    let estado = req.body.app;
+    
+    addSpreadsheet(dia, tarea, estado);
+    let retVal;
+    retVal = {status: 'success', data: 'ok'};
+
+    res.status(200).json(retVal);
+});
+
 function printtarea(tarea){
     console.log("dia: ", tarea.dia);
     console.log("tarea: ", tarea.tarea);
