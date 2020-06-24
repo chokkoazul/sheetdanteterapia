@@ -53,11 +53,17 @@ app.post('/tarea', function (req, res) {
 
 app.post('/alert', function (req, res) {
     
-    let dia = "5/29/2020";
-    let tarea = "terapia pc paulina ajajaj";
-    let estado = req.body.app;
+
+    let unix_timestamp = req.body.result._time;
     
-    addSpreadsheet(dia, tarea, estado);
+var date = new Date(unix_timestamp * 1000);
+
+let diaformat = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear() + ' ' +date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+    let fecha = diaformat;
+    let efectividad = req.body.result.efectividad;
+    let alarma = req.body.search_name;
+    
+    addSpreadSheetAlert(alarma, efectividad, fecha);
     let retVal;
     retVal = {status: 'success', data: 'ok'};
 
@@ -97,6 +103,21 @@ async function addSpreadsheet(dia, tarea, estado) {
         dia : dia,
         tarea : tarea,
         estado : estado
+    };
+
+    await promisify(sheet.addRow)(row);
+}
+
+async function addSpreadSheetAlert(alarma, efectividad, fecha) {
+    const doc = new GoogleSpreadsheet('1_cSpvwEV98cLqCHKQXZjvcFy_Y5Csdn8Q-Xp0vSl7xQ');
+    await promisify(doc.useServiceAccountAuth)(creds);
+    const info = await promisify(doc.getInfo)();
+    const sheet = info.worksheets[1];
+    
+    const row = {
+        alarma : alarma,
+        efectividad : efectividad,
+        fecha : fecha
     };
 
     await promisify(sheet.addRow)(row);
