@@ -70,6 +70,18 @@ let diaformat = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYea
     res.status(200).json(retVal);
 });
 
+app.post('/efectividadmv', function (req, res) {
+    
+    let fecha = req.body.result.fecha_consulta;
+    let efectividad = req.body.result.efectividad;
+    
+    addSpreadSheetEfectividadMV(efectividad, fecha);
+    let retVal;
+    retVal = {status: 'success', data: 'ok'};
+
+    res.status(200).json(retVal);
+});
+
 function printtarea(tarea){
     console.log("dia: ", tarea.dia);
     console.log("tarea: ", tarea.tarea);
@@ -118,6 +130,20 @@ async function addSpreadSheetAlert(alarma, efectividad, fecha) {
         alarma : alarma,
         efectividad : efectividad,
         fecha : fecha
+    };
+
+    await promisify(sheet.addRow)(row);
+}
+
+async function addSpreadSheetEfectividadMV(efectividad, fecha) {
+    const doc = new GoogleSpreadsheet('1y2a1EQtNef9Ox2v8yG75H8E3hhHARVH4zQE9suCA3XU');
+    await promisify(doc.useServiceAccountAuth)(creds);
+    const info = await promisify(doc.getInfo)();
+    const sheet = info.worksheets[5];
+    
+    const row = {
+        fecha : fecha,
+        efectividad : efectividad
     };
 
     await promisify(sheet.addRow)(row);
