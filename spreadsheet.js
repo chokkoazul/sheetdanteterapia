@@ -72,9 +72,16 @@ let diaformat = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYea
 
 app.post('/efectividadmv', function (req, res) {
     
-    let fecha = req.body.result.fecha_consulta;
-    let efectividad = req.body.result.efectividad;
-    
+    let date = new Date(req.body.result.fecha_consulta);
+
+    const day = date.getDate()
+    const month = date.getMonth()+1
+    const year = date.getFullYear()
+
+    let fecha = day + '-' + month + '-' + year;
+
+    let efectividad = req.body.result.efectividad.replace(".", ",").concat("%");
+
     addSpreadSheetEfectividadMV(efectividad, fecha);
     let retVal;
     retVal = {status: 'success', data: 'ok'};
