@@ -151,9 +151,9 @@ async function addSpreadSheetEfectividadMV(efectividad, fecha, tiempo) {
     const sheet = info.worksheets[5];
     
     const row = {
-        fecha : fecha,
-        efectividad : efectividad,
-        tiempo : tiempo
+        "fecha" : fecha,
+        "efectividad" : efectividad,
+        "tiempo respuesta" : tiempo
     };
 
     await promisify(sheet.addRow)(row);
