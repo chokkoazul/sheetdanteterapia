@@ -80,11 +80,15 @@ app.post('/efectividadmv', function (req, res) {
 
     let fecha = day + '-' + month + '-' + year;
 
-    let efectividad = req.body.result.efectividad.replace(".", ",").concat("%");
+    let efectividadbi = req.body.result.efectividadbi.replace(".", ",").concat("%");
 
-    let tiempo = req.body.result.tiempo_promedio.replace(".", ",");
+    let tiempobi = req.body.result.tiempo_promediobi.replace(".", ",");
 
-    addSpreadSheetEfectividadMV(efectividad, fecha, tiempo);
+    let efectividadbl = req.body.result.efectividadbl.replace(".", ",").concat("%");
+
+    let tiempobl = req.body.result.tiempo_promediobl.replace(".", ",");
+
+    addSpreadSheetEfectividadMV(efectividadbi, fecha, tiempobi, efectividadbl, tiempobl);
     let retVal;
     retVal = {status: 'success', data: 'ok'};
 
@@ -144,7 +148,7 @@ async function addSpreadSheetAlert(alarma, efectividad, fecha) {
     await promisify(sheet.addRow)(row);
 }
 
-async function addSpreadSheetEfectividadMV(efectividad, fecha, tiempo) {
+async function addSpreadSheetEfectividadMV(efectividadbi, fecha, tiempobi, efectividadbl, tiempobl) {
     const doc = new GoogleSpreadsheet('1r1R0Fa3mP_okpm617E4nqHigy9n6WqNfMlqpV_ROB78');
     await promisify(doc.useServiceAccountAuth)(creds);
     const info = await promisify(doc.getInfo)();
@@ -152,8 +156,10 @@ async function addSpreadSheetEfectividadMV(efectividad, fecha, tiempo) {
     
     const row = {
         "fecha" : fecha,
-        "efectividad" : efectividad,
-        "tiempo respuesta" : tiempo
+        "efectividad" : efectividadbi,
+        "tiempo respuesta" : tiempobi,
+        "booking list" : efectividadbl,
+        "tiempo respuesta booking list" : tiempobl
     };
 
     await promisify(sheet.addRow)(row);
