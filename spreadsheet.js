@@ -95,6 +95,27 @@ app.post('/efectividadmv', function (req, res) {
     res.status(200).json(retVal);
 });
 
+app.post('/checkin', function (req, res) {
+    
+    let date = new Date(req.body.result.fecha);
+
+    const day = date.getDate()
+    const month = date.getMonth()+1
+    const year = date.getFullYear()
+
+    let fecha = day + '-' + month + '-' + year;
+
+    let efectividad = req.body.result.efectividad.replace(".", ",").concat("%");
+
+    let tiempo = req.body.result.tiempo.replace(".", ",");
+
+    addSpreadSheetCheckin(fecha, efectividad, tiempo);
+    let retVal;
+    retVal = {status: 'success', data: 'ok'};
+
+    res.status(200).json(retVal);
+});
+
 function printtarea(tarea){
     console.log("dia: ", tarea.dia);
     console.log("tarea: ", tarea.tarea);
@@ -160,6 +181,21 @@ async function addSpreadSheetEfectividadMV(efectividadbi, fecha, tiempobi, efect
         "tiempo respuesta" : tiempobi,
         "booking list" : efectividadbl,
         "tiempo respuesta booking list" : tiempobl
+    };
+
+    await promisify(sheet.addRow)(row);
+}
+
+async function addSpreadSheetCheckin(fecha, efectividad, tiempo) {
+    const doc = new GoogleSpreadsheet('1r1R0Fa3mP_okpm617E4nqHigy9n6WqNfMlqpV_ROB78');
+    await promisify(doc.useServiceAccountAuth)(creds);
+    const info = await promisify(doc.getInfo)();
+    const sheet = info.worksheets[6];
+    
+    const row = {
+        "fecha" : fecha,
+        "efectividad" : efectividad,
+        "tiempo respuesta" : tiempo
     };
 
     await promisify(sheet.addRow)(row);
