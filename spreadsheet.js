@@ -190,13 +190,20 @@ async function addSpreadSheetCheckin(fecha, efectividad, tiempo) {
     const doc = new GoogleSpreadsheet('1r1R0Fa3mP_okpm617E4nqHigy9n6WqNfMlqpV_ROB78');
     await promisify(doc.useServiceAccountAuth)(creds);
     const info = await promisify(doc.getInfo)();
-    const sheet = info.worksheets[6];
+    const sheet = info.worksheets[9];
     
+console.log("fecha...",fecha)
+console.log("efectividad...",efectividad)
+console.log("tiempo...",tiempo)
+
+
     const row = {
         "fecha" : fecha,
         "efectividad" : efectividad,
         "tiempo respuesta" : tiempo
     };
+
+    console.log("row...",row)
 
     await promisify(sheet.addRow)(row);
 }
